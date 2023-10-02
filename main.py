@@ -13,22 +13,19 @@ patron6 = url_delete+'\.[a-z]{2,3}'
 patron_completo = patron1+'|'+patron2+'|'+patron3+'|'+patron4+'|'+patron5+'|'+patron6
 
 texto = open('texto_1.txt', 'r')
-lineas = texto.readlines()
-for item in lineas:
-    #resultado = re.findall(patron_completo, item)
-    resultado = re.search(patron_completo, item)
-    star_url = resultado.start()
-    fin_url = resultado.end()
-    i = 0
-    lista = list(item)
-    for caracter in lista:
-        if(star_url <= i & i < fin_url):
-            lista[i] = '-'
-        i = i + 1
-    item = ''.join(lista)
-    print(item)
-    #texto.write(item)
-    print(resultado)
-    #reWrite()
+lineas = texto.read()
 
+#resultado = re.search(patron_completo, item, flags=re.IGNORECASE)
+print("Archivo Inicial")
+print(lineas)
+lineas=re.sub(patron_completo, '-', lineas, flags=re.IGNORECASE)
+print("Archivo resultante")
+print(lineas)
+print("Desea reescribir el archivo? Si | NO")
+op = input()
+if (op.lower() == 'si'):
+    archivo = open('texto_1.txt', 'w')
+    archivo.write(lineas)
+    archivo.close()
+    print("Archivo Reescrito")
 texto.close()
