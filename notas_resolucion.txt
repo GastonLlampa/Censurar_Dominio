@@ -7,4 +7,12 @@ texto = 'Este es un ejemplo de una página web: https://proyectodalto.com y tamb
 #patron_completo = 'www\.|https:\/\/www\/|'+'\w+'+'\.[a-z]{2,3}'+'\/\w*'
 #patron_completo = 'www\.\w+\.[a-z]{2,3}|https:\/\/www\.\w+\.[a-z]{2,3}|https:\/\/\w+\.[a-z]{2,3}|http:\/\/www\.\w+\.[a-z]{2,3}|http:\/\/\w+\.[a-z]{2,3}|\w+\.[a-z]{2,3}'
 
+        print("Desea reescribir el archivo? Si | NO")
+        op = input()
+        if (op.lower() == 'si'):
+            archivo = open('texto_1.txt', 'w')
+            archivo.write(lineas)
+            archivo.close()
+            print("Archivo Reescrito")
+
 
