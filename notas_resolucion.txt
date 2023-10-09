@@ -1,4 +1,4 @@
-texto = 'Este es un ejemplo de una página web: https://proyectodalto.com y también podemos visitar https://www.example.ar, vamos a buscar tambien www.facebook.com o tal vez funcione facebook.ar, estableciendo algo raro http://proyectodalto.com colocando mas ejemplos http://www.example.ar'
+Este es un ejemplo de una página web: https://proyectodalto.com y también podemos visitar https://www.example.ar, vamos a buscar tambien www.facebook.com o tal vez funcione facebook.ar, estableciendo algo raro http://proyectodalto.com colocando mas ejemplos http://www.example.ar'
 
 #patron_completo = '\w+\.'+'[a-z]{2,3}$'  #Para facebook.com
 #patron_completo = 'https:\/\/www\.'+'\w+\.'+'[a-z]{2,3}'  #Para https://www.example.org  funciona sin $
