@@ -4,56 +4,75 @@ import customtkinter as ctk
 from customtkinter import CTk, CTkFrame, CTkButton, CTkLabel, CTkEntry
 from tkinter import filedialog, PhotoImage, messagebox as mb
 from io import open
+import pathlib
+
+def seleccionar_archivo():
+    #Proceso de seleccionar el archivo de Texto
+    archivo = filedialog.askopenfile(title="Abrir Archivo", filetypes=(("Archivos de Textos", "*.txt"),("Todos los Archivos", "*.*")))
+    path = pathlib.Path(archivo.name)
+    extension = (''.join(path.suffixes))
+    if (extension == '.txt'):
+        if archivo:
+            lineasInit.set(value=archivo.read()) 
+            mensaje_archivo_selecc.configure(text="Archivo seleccionado")
+            boton_revisar.configure(state="normal")
+            archivo.close()
+        else:
+            mb.showwarning(message="!!Archivo no selecionado!!", title="Advertencia")
+    else:
+        boton_revisar.configure(state="disabled")
+        mensaje_archivo_selecc.configure(text="")
+        mb.showerror(message="Seleccionar solo Archivos .txt", title="Error")
 
 def censurarDominio():
     #Proceso de eliminacion del dominio
-    url_delete = dominio_eliminar.get()
-    patron1 = 'www\.'+url_delete+'\.[a-z]{2,3}'
-    patron2 = 'https:\/\/www\.'+url_delete+'\.[a-z]{2,3}'
-    patron3 = 'https:\/\/'+url_delete+'\.[a-z]{2,3}'
-    patron4 = 'http:\/\/www\.'+url_delete+'\.[a-z]{2,3}'
-    patron5 = 'http:\/\/'+url_delete+'\.[a-z]{2,3}'
-    patron6 = url_delete+'\.[a-z]{2,3}'
-    patron_completo = patron1+'|'+patron2+'|'+patron3+'|'+patron4+'|'+patron5+'|'+patron6
-
-    global lineas
-    lineas = archivo.read()
-    if archivo:
-        cantidad = len(re.findall(patron_completo, lineas, flags=re.IGNORECASE))
-        lineas=re.sub(patron_completo, '-', lineas, flags=re.IGNORECASE)
-        if (cantidad != 0 ):
-            texto_resul.configure(text="Dominio eliminado con exito")
-            texto_Concidencias.configure(text="Coincidencias encontradas:" + str(cantidad))
-            boton_exportar.configure(state="normal")   #Activa el boton de guardar archivo
+    dominio_delete = dominio_eliminar.get()
+    patronDominio = '^[a-zA-Z]+$'
+    patronUrl1 = 'www\.'+dominio_delete+'\.[a-z]{2,3}'
+    patronUrl2 = 'https:\/\/www\.'+dominio_delete+'\.[a-z]{2,3}'
+    patronUrl3 = 'https:\/\/'+dominio_delete+'\.[a-z]{2,3}'
+    patronUrl4 = 'http:\/\/www\.'+dominio_delete+'\.[a-z]{2,3}'
+    patronUrl5 = 'http:\/\/'+dominio_delete+'\.[a-z]{2,3}'
+    patronUrl6 = dominio_delete+'\.[a-z]{2,3}'
+    patronCompleto = patronUrl1+'|'+patronUrl2+'|'+patronUrl3+'|'+patronUrl4+'|'+patronUrl5+'|'+patronUrl6
+    
+    if (re.search(patronDominio, dominio_delete)):
+        if (lineasInit.get() != ''):
+            cantidad = len(re.findall(patronCompleto, lineasInit.get(), flags=re.IGNORECASE))
+            lineasInit.set(re.sub(patronCompleto, '-', lineasInit.get(), re.IGNORECASE))
+            #Es para ver como se modifica el texto, y por eso solo se ve desde la terminal
+            print(lineasInit.get())
+            if (cantidad != 0):
+                texto_resul.configure(text="Dominio eliminado con exito")
+                texto_Concidencias.configure(text="Coincidencias encontradas:" + str(cantidad))
+                boton_exportar.configure(state="normal") #Activa el boton de Guardar Archivo
+            else:
+                texto_resul.configure(text="No se han encontrado coincidencias")
+                texto_Concidencias.configure(text="")
         else:
-            texto_resul.configure(text="No se han encontrado coincidencias")
-            boton_exportar.configure(state="disabled")   #Desacctiva el boton de guardar archivo
-            texto_Concidencias.configure(text="")
-
+            mb.showwarning(message="Archivo de texto vacio", title="Advertencia")
+    else:
+        texto_resul.configure(text="")
+        texto_Concidencias.configure(text="")
+        mb.showwarning(message="Dominio ingresado incorrecto", title="Advertencia")
+        
 def guardar():
-    #Si desea exportar el archivo de texto, se debe seleccionar un nuevo archivo
-    nuevo_archivo = filedialog.asksaveasfilename(title="Exportar Archivo", defaultextension=".txt", filetypes=(("Archivos de Texto", "*.txt"),("Todos los Archivos","*.*")))
+    #Proceso para guardar el archivo de texto modificado
+    nuevo_archivo = filedialog.asksaveasfilename(title="Exportar Archivo", defaultextension=".txt", filetypes=(("Archivos de Textos", "*.txt"),("Todos los Archivos", "*.*")))
     if nuevo_archivo!='':
         file = open(nuevo_archivo, "w")
-        file.write(lineas)
-        file.close()
+        file.write(lineasInit.get())
         mb.showinfo("Informacion", "El texto se guardo con exito")
-
-def seleccionar_archivo():
-    #Seleccionar archivo de texto
-    global archivo
-    archivo = filedialog.askopenfile(title="Abrir Archivo", filetypes=(("Archivos de Texto", "*.txt"),("Todos los Archivos","*.*")))
-    if archivo:
-        mensaje_archivo_selecc.configure(text=f"Archivo seleccionado")
-    else:
-        mensaje_archivo_selecc.configure(text="!!Archivo no seleccionado!!")
+        file.close()
+        boton_exportar.configure(state="disabled") #Desactiva el boton de Guardar Archivo
 
 #Las ventana principal de la aplicacion y los Widgets
 menu = ctk.CTk()
 menu.title("Eliminar Dominio")
-menu.geometry("290x340")
+menu.geometry("290x340+534+200") #290x340
 menu.config(bg='gray10')
 menu.iconbitmap('logo_fi_J9A_icon.ico')
+lineasInit = tk.StringVar(menu)
 
 frame = ctk.CTkFrame(menu, fg_color='gray10')
 frame.grid(column = 0, row = 0, sticky = 'nsew', padx=10, pady=15)
@@ -79,7 +98,7 @@ mensaje_dominio.grid(columnspan=2, row=3)
 dominio_eliminar = ctk.CTkEntry(frame, font=('sans rerif', 12), placeholder_text='Dominio', border_color='deep sky blue', fg_color='gray10', width=220, height=40)
 dominio_eliminar.grid(columnspan=2, row=4, padx=4, pady=4)
 
-boton_revisar = ctk.CTkButton(frame, font=('sans rerif', 12), text="Eliminar Dominio", border_color='deep sky blue', fg_color='gray10', hover_color='DeepSkyBlue3', border_width=2, command=censurarDominio)
+boton_revisar = ctk.CTkButton(frame, font=('sans rerif', 12), text="Eliminar Dominio", border_color='deep sky blue', fg_color='gray10', hover_color='DeepSkyBlue3', border_width=2, state="disabled", command=censurarDominio)
 boton_revisar.grid(columnspan=2, row=5, padx=4, pady=4)
 
 texto_resul = ctk.CTkLabel(frame, font=('sans rerif', 12), text="")

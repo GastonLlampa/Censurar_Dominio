@@ -1,0 +1,14 @@
+- Editor de Texto, En este caso Visual Studio Code
+    1. Abrimos la carpeta donde se encuentra el scripts 
+    2. Abrimos el archivo main.py 
+    3. Tocamos la tecla F5 para ejecutarlo
+
+- Terminal cmd de Windows
+    1. Usando comando dir y cd nos dirigimos a la carpeta donde se encuentra el script
+    2. Para ejecutar el script usamos comando > python main.py
+
+Observaciones:
+- Una vez que se hace click en Eliminar Dominio, se va a eliminar el dominio del texto, si se hacemos un click de nuevo al boton Eliminar Dominio, nos da resultado cero coincidencia.
+- Se puede eliminar varios dominios, pero se ingresa uno a la vez.
+- Cuando se guarda el archivo se desabilita el boton de Guardar Archivo, para activarse de nuevo tiene que haber una modificacion en el texto, es decir eliminar un dominio mas del texto.
+- Si selecciona un archivo y no se guardo, y luego se selecciona otro archivo, todo el texto modificado del primer archivo se reemplazará por el texto del segundo archivo.
